@@ -6,11 +6,35 @@ import { SetsModule } from './sets/sets.module';
 import { WordsModule } from './words/words.module';
 import { UserWordsModule } from './user-words/user-words.module';
 import { InteractionsModule } from './interactions/interactions.module';
-import { InteractionsModule } from './interactions/interactions.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './users/entities/user.entity';
+import { Set } from './sets/entities/set.entity';
+import { Word } from './words/entities/word.entity';
+import { UserWord } from './user-words/entities/user-word.entity';
+import { Interaction } from './interactions/entities/interaction.entity';
+import { AuthModule } from './auth/auth.module';
+import { AuthService } from './auth/auth.service';
 
 @Module({
-  imports: [UsersModule, SetsModule, WordsModule, UserWordsModule, InteractionsModule],
+  imports: [
+    UsersModule,
+    SetsModule,
+    WordsModule,
+    UserWordsModule,
+    InteractionsModule,
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: '192.168.3.4',
+      port: 5432,
+      username: 'root',
+      password: 'root',
+      database: 'kurwadb',
+      entities: [User, Set, Word, UserWord, Interaction],
+      synchronize: true,
+    }),
+    AuthModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AuthService],
 })
 export class AppModule {}

@@ -15,6 +15,8 @@ export enum Lang {
   UKR = 'Ukrainian',
   CZ = 'Czech',
   DE = 'German',
+  JA = 'Japan',
+  SQ = 'Albanian',
 }
 
 @Entity('sets')
@@ -33,14 +35,14 @@ export class Set {
     enum: Lang,
     default: Lang.ENG,
   })
-  sourceLang: Lang;
+  fromLanguage: Lang;
 
   @Column({
     type: 'enum',
     enum: Lang,
     default: Lang.UKR,
   })
-  defLang: Lang;
+  toLanguage: Lang;
 
   @Column({ default: false })
   starred: boolean;
