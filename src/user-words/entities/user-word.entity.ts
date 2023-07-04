@@ -14,7 +14,7 @@ export enum Status {
   LEARNED = 'Learned',
 }
 
-@Entity()
+@Entity('user-words')
 export class UserWord {
   @PrimaryGeneratedColumn()
   id: number;

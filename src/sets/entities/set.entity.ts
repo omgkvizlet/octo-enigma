@@ -5,6 +5,7 @@ import {
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Word } from '../../words/entities/word.entity';
 import { User } from '../../users/entities/user.entity';
@@ -14,10 +15,9 @@ export enum Lang {
   UKR = 'Ukrainian',
   CZ = 'Czech',
   DE = 'German',
-  NONE = 'Kokot',
 }
 
-@Entity()
+@Entity('sets')
 export class Set {
   @PrimaryGeneratedColumn()
   id: number;
@@ -31,16 +31,22 @@ export class Set {
   @Column({
     type: 'enum',
     enum: Lang,
-    default: Lang.NONE,
+    default: Lang.ENG,
   })
   sourceLang: Lang;
 
   @Column({
     type: 'enum',
     enum: Lang,
-    default: Lang.NONE,
+    default: Lang.UKR,
   })
   defLang: Lang;
+
+  @Column({ default: false })
+  starred: boolean;
+
+  @UpdateDateColumn()
+  lastUpdated: Date;
 
   @OneToMany(() => Word, (word) => word.set)
   words: Word[];

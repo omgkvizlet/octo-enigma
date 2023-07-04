@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Set } from '../../sets/entities/set.entity';
 
-@Entity()
+@Entity('words')
 export class Word {
   @PrimaryGeneratedColumn()
   id: number;
