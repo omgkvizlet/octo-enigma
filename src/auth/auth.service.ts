@@ -3,6 +3,7 @@ import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { User } from '../users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,19 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
+    return this.genToken(user);
+  }
+
+  async signUp(createUserDto: CreateUserDto) {
+    const user = await this.usersService.create(createUserDto);
+
+    return {
+      ...(await this.genToken(user)),
+      user,
+    };
+  }
+
+  private async genToken(user: User): Promise<{ token: string }> {
     const payload = { sub: user.id, username: user.username };
 
     return {

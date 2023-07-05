@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate {
         secret: btoa('fuckUJS'),
       });
 
-      request['user'] = this.usersService.findOne(payload['username']);
+      request['user'] = await this.usersService.findOne(payload['username']);
     } catch {
       throw new UnauthorizedException();
     }
