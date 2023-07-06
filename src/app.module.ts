@@ -14,6 +14,8 @@ import { UserWord } from './user-words/entities/user-word.entity';
 import { Interaction } from './interactions/entities/interaction.entity';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
 
 @Module({
   imports: [
@@ -24,13 +26,16 @@ import { AuthService } from './auth/auth.service';
     InteractionsModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '192.168.3.4',
+      host: 'localhost',
       port: 5432,
       username: 'root',
       password: 'root',
       database: 'kurwadb',
       entities: [User, Set, Word, UserWord, Interaction],
       synchronize: true,
+    }),
+    AutomapperModule.forRoot({
+      strategyInitializer: classes(),
     }),
     AuthModule,
   ],

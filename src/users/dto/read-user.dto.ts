@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes';
 
-export class CreateUserDto {
+export class ReadUserDto {
   @AutoMap()
   username: string;
 
@@ -8,13 +8,13 @@ export class CreateUserDto {
   email: string;
 
   @AutoMap()
-  password: string;
-
-  @AutoMap()
   firstName: string;
 
   @AutoMap()
   lastName: string;
+
+  @AutoMap()
+  fullName: string;
 
   @AutoMap()
   birthDate: string;
