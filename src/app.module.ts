@@ -16,6 +16,8 @@ import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
+import { APP_FILTER } from '@nestjs/core';
+import { NotfoundFilter } from './notfound.filter';
 
 @Module({
   imports: [
@@ -40,6 +42,13 @@ import { classes } from '@automapper/classes';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AuthService],
+  providers: [
+    AppService,
+    AuthService,
+    {
+      provide: APP_FILTER,
+      useClass: NotfoundFilter,
+    },
+  ],
 })
 export class AppModule {}

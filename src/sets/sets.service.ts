@@ -42,18 +42,32 @@ export class SetsService {
   }
 
   findAll() {
-    return `This action returns all sets`;
+    return this.setsRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} set`;
+    return this.setsRepository.findOneOrFail({ where: { id } });
   }
 
-  update(id: number, updateSetDto: UpdateSetDto) {
-    return `This action updates a #${id} set`;
+  findOneByName(name: string) {
+    return this.setsRepository.findOneOrFail({ where: { name } });
+  }
+
+  async update(id: number, updateSetDto: UpdateSetDto): Promise<Set> {
+    // console.log(updateSetDto);
+
+    const mappedSet = await this.classMapper.mapAsync(
+      updateSetDto,
+      UpdateSetDto,
+      Set,
+    );
+
+    const _ = await this.setsRepository.update(id, mappedSet);
+
+    return this.setsRepository.findOne({ where: { id: id } });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} set`;
+    return this.setsRepository.delete({ id });
   }
 }

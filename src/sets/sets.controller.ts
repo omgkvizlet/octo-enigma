@@ -1,8 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  UseGuards,
+  Request,
+  Query,
+} from '@nestjs/common';
 import { SetsService } from './sets.service';
 import { CreateSetDto } from './dto/create-set.dto';
 import { UpdateSetDto } from './dto/update-set.dto';
-import { AuthGuard } from "../auth/auth.guard";
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('sets')
 export class SetsController {
@@ -15,7 +27,10 @@ export class SetsController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('name') name: string) {
+    if (name) {
+      return this.setsService.findOneByName(name);
+    }
     return this.setsService.findAll();
   }
 
