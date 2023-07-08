@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from "@nestjs/common";
 import { SetsService } from './sets.service';
 import { CreateSetDto } from './dto/create-set.dto';
 import { UpdateSetDto } from './dto/update-set.dto';
+import { AuthGuard } from "../auth/auth.guard";
 
 @Controller('sets')
 export class SetsController {
   constructor(private readonly setsService: SetsService) {}
 
   @Post()
-  create(@Body() createSetDto: CreateSetDto) {
-    return this.setsService.create(createSetDto);
+  @UseGuards(AuthGuard)
+  create(@Body() createSetDto: CreateSetDto, @Req() req: Request) {
+    return this.setsService.create(createSetDto, req['user']);
   }
 
   @Get()

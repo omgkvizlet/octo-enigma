@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Set } from '../../sets/entities/set.entity';
+import { AutoMap } from "@automapper/classes";
 
 export enum Sex {
   MASCULINE = 'm',
@@ -18,9 +19,11 @@ export class Word {
   id: number;
 
   @Column()
+  @AutoMap()
   source: string;
 
   @Column()
+  @AutoMap()
   definition: string;
 
   @Column({
@@ -28,6 +31,7 @@ export class Word {
     enum: Sex,
     default: Sex.MASCULINE,
   })
+  @AutoMap()
   sex: Sex;
 
   @Column({
@@ -35,6 +39,7 @@ export class Word {
     enum: PartOfSpeech,
     default: PartOfSpeech.NOUN,
   })
+  @AutoMap()
   partOfSpeech: PartOfSpeech;
 
   @ManyToOne(() => Set, (set) => set.words)
