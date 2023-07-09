@@ -1,18 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
-import { InjectRepository } from "@nestjs/typeorm";
-import { Word } from "./entities/word.entity";
-import { Repository } from "typeorm";
+import { InjectRepository } from '@nestjs/typeorm';
+import { Word } from './entities/word.entity';
+import { Repository } from 'typeorm';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
 
 @Injectable()
 export class WordsService {
-
-  constructor(@InjectRepository(Word) private wordsRepository: Repository<Word>) {
-  }
+  constructor(
+    @InjectRepository(Word) private wordsRepository: Repository<Word>,
+    @InjectMapper() private readonly classMapper: Mapper,
+  ) {}
 
   create(createWordDto: CreateWordDto) {
-    return 'This action adds a new word';
+    // console.log();
+    return this.wordsRepository.save(
+      this.classMapper.map(createWordDto, CreateWordDto, Word),
+    );
   }
 
   saveRaw(words: Word[]) {

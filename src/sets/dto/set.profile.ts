@@ -13,7 +13,7 @@ import * as bcrypt from 'bcrypt';
 import { ReadUserDto } from '../../users/dto/read-user.dto';
 import { CreateSetDto } from './create-set.dto';
 import { Set } from '../entities/set.entity';
-import { SingleWordDto } from './single-word.dto';
+import { SingleWordDto } from '../../words/dto/single-word.dto';
 import { Word } from '../../words/entities/word.entity';
 import { UpdateSetDto } from './update-set.dto';
 
@@ -25,8 +25,6 @@ export class SetProfile extends AutomapperProfile {
 
   override get profile() {
     return (mapper: Mapper) => {
-      createMap(mapper, SingleWordDto, Word);
-
       createMap(
         mapper,
         CreateSetDto,
