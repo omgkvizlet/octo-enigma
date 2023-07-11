@@ -1,15 +1,26 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  Request,
+} from '@nestjs/common';
 import { WordsService } from './words.service';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
+import { User } from '../users/entities/user.entity';
 
 @Controller('words')
 export class WordsController {
   constructor(private readonly wordsService: WordsService) {}
 
   @Post()
-  create(@Body() createWordDto: CreateWordDto) {
-    return this.wordsService.create(createWordDto);
+  create(@Body() createWordDto: CreateWordDto, @Req() req: Request) {
+    return this.wordsService.create(createWordDto, req['user'] as User);
   }
 
   @Get()

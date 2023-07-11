@@ -1,5 +1,13 @@
-import { AfterLoad, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  AfterLoad,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { AutoMap } from '@automapper/classes';
+import { Set } from '../../sets/entities/set.entity';
 
 @Entity('users')
 export class User {
@@ -34,6 +42,9 @@ export class User {
   birthDate: Date;
 
   age: number;
+
+  @ManyToMany(() => Set, (set) => set.authors, { eager: true })
+  sets: Set[];
 
   @AfterLoad()
   aggregate() {

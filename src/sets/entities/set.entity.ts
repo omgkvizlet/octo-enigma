@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Word } from '../../words/entities/word.entity';
 import { User } from '../../users/entities/user.entity';
-import { AutoMap } from "@automapper/classes";
+import { AutoMap } from '@automapper/classes';
 
 export enum Lang {
   ENG = 'English',
@@ -62,7 +62,7 @@ export class Set {
   @AutoMap()
   words: Word[];
 
-  @ManyToMany(() => User)
+  @ManyToMany(() => User, (user) => user.sets)
   @JoinTable()
   @AutoMap()
   authors: User[];

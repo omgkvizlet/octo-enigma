@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import {
   createMap,
   forMember,
-  ignore,
   mapFrom,
   Mapper,
   typeConverter,

@@ -1,6 +1,15 @@
-import { Body, Controller, Get, Param, Patch, Query, Request, UseGuards } from "@nestjs/common";
-import { UsersService } from "./users.service";
-import { AuthGuard } from "../auth/auth.guard";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { UsersService } from './users.service';
+import { AuthGuard } from '../auth/auth.guard';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 

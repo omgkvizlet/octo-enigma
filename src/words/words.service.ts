@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,19 +6,33 @@ import { Word } from './entities/word.entity';
 import { Repository } from 'typeorm';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
+import { Set } from '../sets/entities/set.entity';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class WordsService {
   constructor(
     @InjectRepository(Word) private wordsRepository: Repository<Word>,
+    @InjectRepository(Set) private setRepository: Repository<Set>,
     @InjectMapper() private readonly classMapper: Mapper,
   ) {}
 
-  create(createWordDto: CreateWordDto) {
+  async create(createWordDto: CreateWordDto, user: User) {
+    const set = await this.setRepository.findOneOrFail({
+      where: { id: createWordDto.setID, authors: { id: user.id } },
+    });
+
+    if (!set) {
+      throw new NotFoundException('No set by given ID');
+    }
+
     // console.log();
-    return this.wordsRepository.save(
-      this.classMapper.map(createWordDto, CreateWordDto, Word),
-    );
+    return {
+      ...(await this.wordsRepository.save(
+        this.classMapper.map(createWordDto, CreateWordDto, Word),
+      )),
+      set,
+    };
   }
 
   saveRaw(words: Word[]) {

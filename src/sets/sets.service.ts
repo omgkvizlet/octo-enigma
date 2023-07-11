@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateSetDto } from './dto/create-set.dto';
 import { UpdateSetDto } from './dto/update-set.dto';
 import { InjectMapper } from '@automapper/nestjs';
@@ -27,7 +27,15 @@ export class SetsService {
 
     const set: Set = { ...mappedSet, authors: [user] };
 
-    console.log(set.words);
+    try {
+      // TODO optional
+      await this.findOneByNameAndUser(set.name, user);
+    } catch (e) {
+      throw new HttpException(
+        'Set with this name already exists',
+        HttpStatus.CONFLICT,
+      );
+    }
 
     const saved = await this.setsRepository.save(set);
 
@@ -41,20 +49,40 @@ export class SetsService {
     // return set;
   }
 
-  findAll() {
-    return this.setsRepository.find();
+  findAll(user: User) {
+    return this.setsRepository.find({
+      where: {
+        authors: { id: user.id },
+      },
+    });
   }
 
-  findOne(id: number) {
-    return this.setsRepository.findOneOrFail({ where: { id } });
+  findOne(id: number, user: User) {
+    return this.setsRepository.findOneOrFail({
+      where: { id, authors: { id: user.id } },
+      // relations: ['authors'],
+    });
+    // return this.setsRepository
+    //   .createQueryBuilder('sets')
+    //   .leftJoin('sets.authors', 'users')
+    //   .where('users.id = :userID', { userID: user.id })
+    //   .getOneOrFail();
   }
 
-  findOneByName(name: string) {
-    return this.setsRepository.findOneOrFail({ where: { name } });
+  findOneByNameAndUser(name: string, user: User) {
+    return this.setsRepository.findOneOrFail({
+      where: { name, authors: { id: user.id } },
+    });
   }
 
-  async update(id: number, updateSetDto: UpdateSetDto): Promise<Set> {
+  async update(
+    id: number,
+    updateSetDto: UpdateSetDto,
+    user: User,
+  ): Promise<Set> {
     // console.log(updateSetDto);
+
+    const set = await this.findOne(id, user);
 
     const mappedSet = await this.classMapper.mapAsync(
       updateSetDto,
@@ -62,12 +90,14 @@ export class SetsService {
       Set,
     );
 
-    const _ = await this.setsRepository.update(id, mappedSet);
+    await this.setsRepository.update({ id }, mappedSet);
 
-    return this.setsRepository.findOne({ where: { id: id } });
+    return set;
   }
 
-  remove(id: number) {
+  async remove(id: number, user: User) {
+    await this.findOne(id, user);
+
     return this.setsRepository.delete({ id });
   }
 }
