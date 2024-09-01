@@ -1,11 +1,17 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateSetDto } from './dto/create-set.dto';
 import { UpdateSetDto } from './dto/update-set.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import { Set } from './entities/set.entity';
 import { Word } from '../words/entities/word.entity';
 import { WordsService } from '../words/words.service';
@@ -27,10 +33,12 @@ export class SetsService {
 
     const set: Set = { ...mappedSet, authors: [user] };
 
-    try {
-      // TODO optional
-      await this.findOneByNameAndUser(set.name, user);
-    } catch (e) {
+    // TODO put into optional
+    const res = await this.setsRepository.findOne({
+      where: { name: set.name, authors: { id: user.id } },
+    });
+
+    if (res !== null) {
       throw new HttpException(
         'Set with this name already exists',
         HttpStatus.CONFLICT,
@@ -39,6 +47,8 @@ export class SetsService {
 
     const saved = await this.setsRepository.save(set);
 
+    // TODO
+    // TODO exception filter
     await this.wordsService.saveRaw(
       set.words.map((e): Word => {
         return { ...e, set: saved };

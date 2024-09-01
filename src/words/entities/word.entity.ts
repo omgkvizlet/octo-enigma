@@ -3,7 +3,8 @@ import { Set } from '../../sets/entities/set.entity';
 import { AutoMap } from "@automapper/classes";
 
 export enum Sex {
-  MASCULINE = 'm',
+  MASCULINE_ANIMATE = 'm. živ.',
+  MASCULINE_INANIMATE = 'm. nživ.',
   FEMININE = 'f',
   NEUTER = 'n',
 }
@@ -22,6 +23,7 @@ export class Word {
   @AutoMap()
   source: string;
 
+  // TODO automap array
   @Column()
   @AutoMap()
   definition: string;
@@ -29,7 +31,7 @@ export class Word {
   @Column({
     type: 'enum',
     enum: Sex,
-    default: Sex.MASCULINE,
+    default: Sex.MASCULINE_ANIMATE,
   })
   @AutoMap()
   sex: Sex;
@@ -42,6 +44,6 @@ export class Word {
   @AutoMap()
   partOfSpeech: PartOfSpeech;
 
-  @ManyToOne(() => Set, (set) => set.words)
+  @ManyToOne(() => Set, (set) => set.words, { onDelete: 'CASCADE' })
   set: Set;
 }
