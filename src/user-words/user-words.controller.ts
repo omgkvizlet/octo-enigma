@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { UserWordsService } from './user-words.service';
 import { CreateUserWordDto } from './dto/create-user-word.dto';
 import { UpdateUserWordDto } from './dto/update-user-word.dto';
@@ -9,26 +17,28 @@ export class UserWordsController {
 
   @Post()
   create(@Body() createUserWordDto: CreateUserWordDto) {
-    return this.userWordsService.create(createUserWordDto);
+    return this.userWordsService.add(createUserWordDto);
   }
 
-  @Get()
-  findAll() {
-    return this.userWordsService.findAll();
-  }
 
+  //
+  // @Get()
+  // findAll() {
+  //   return this.userWordsService.findAll();
+  // }
+  //
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userWordsService.findOne(+id);
+    return this.userWordsService.findLibrarySets(+id);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserWordDto: UpdateUserWordDto) {
-    return this.userWordsService.update(+id, updateUserWordDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userWordsService.remove(+id);
-  }
+  //
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateUserWordDto: UpdateUserWordDto) {
+  //   return this.userWordsService.update(+id, updateUserWordDto);
+  // }
+  //
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.userWordsService.remove(+id);
+  // }
 }

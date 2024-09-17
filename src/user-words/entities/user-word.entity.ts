@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Word } from '../../words/entities/word.entity';
 import { User } from '../../users/entities/user.entity';
+import { Set } from '../../sets/entities/set.entity';
 
 export enum Status {
   UNKNOWN = 'Unknown',
@@ -32,6 +33,11 @@ export class UserWord {
   @OneToOne(() => Word)
   @JoinColumn()
   word: Word;
+
+  // TODO Make it with complex join using word.set or leave it such ???
+  @OneToOne(() => Set)
+  @JoinColumn()
+  set: Set;
 
   // @ManyToOne(() => User, (user) => user.userWords)
   @OneToOne(() => User)

@@ -8,6 +8,7 @@ import { SetsModule } from '../sets/sets.module';
 import { Set } from '../sets/entities/set.entity';
 
 // TODO from set repo to set service
+// TODO All operations with sets should be performed in sets module !!!!!!!!!!!!!!!
 @Module({
   imports: [TypeOrmModule.forFeature([Word, Set])],
   controllers: [WordsController],
