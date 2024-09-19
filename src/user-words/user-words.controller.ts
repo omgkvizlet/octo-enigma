@@ -27,9 +27,9 @@ export class UserWordsController {
   //   return this.userWordsService.findAll();
   // }
   //
-  @Get(':id')
+  @Get('/lib/:id')
   findOne(@Param('id') id: string) {
-    return this.userWordsService.findLibrarySets(+id);
+    return this.userWordsService.getSetsListByUserID(+id);
   }
   //
   // @Patch(':id')

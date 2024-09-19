@@ -16,6 +16,7 @@ export class UserWordsService {
   constructor(
     @InjectRepository(UserWord) private userWordsRepo: Repository<UserWord>,
     @InjectRepository(Word) private wordsRepo: Repository<Word>,
+    @InjectRepository(Set) private setsRepo: Repository<Set>,
     @InjectMapper() private readonly classMapper: Mapper,
   ) {}
 
@@ -28,7 +29,9 @@ export class UserWordsService {
       UserWord,
     );
 
-    // console.log(uw);
+    this.setsRepo.findOneByOrFail({ id: +createUserWordDto.setID })
+
+    console.log(uw);
 
     return await this.userWordsRepo.save(uw);
   }
@@ -56,13 +59,13 @@ export class UserWordsService {
     return `This action updates a #${id} userWord`;
   }
 
-  async findLibrarySets(id: number) {
+  async getSetsListByUserID(userID: number) {
     // TODO !!! #1 task: how to pass set & how to load it (auto/manual)
 
     return (
       await this.userWordsRepo.find({
         relations: ['set', 'user'],
-        where: { user: { id } },
+        where: { user: { id: userID } },
       })
     ).map((val) => val?.set);
     // .where('userWords.setId', `${id}`);
