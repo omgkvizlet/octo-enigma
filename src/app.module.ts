@@ -17,7 +17,8 @@ import { AuthService } from './auth/auth.service';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { APP_FILTER } from '@nestjs/core';
-import { NotfoundFilter } from './notfound.filter';
+import { NotfoundFilter } from './filters/notfound.filter';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -40,15 +41,16 @@ import { NotfoundFilter } from './notfound.filter';
       strategyInitializer: classes(),
     }),
     AuthModule,
+    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [
     AppService,
     AuthService,
-    {
-      provide: APP_FILTER,
-      useClass: NotfoundFilter,
-    },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: NotfoundFilter,
+    // },
   ],
 })
 export class AppModule {}

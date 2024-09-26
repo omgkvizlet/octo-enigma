@@ -32,13 +32,7 @@ export class UserWordProfile extends AutomapperProfile {
           mapFrom((source) => {
             return { id: +source.setID } as Set;
           }),
-        ),
-        forMember(
-          (dest) => dest.user,
-          mapFrom((source) => {
-            return { id: +source.userID } as User;
-          }),
-        ),
+        )
       );
 
       // createMap(mapper, UpdateSetDto, Set);

@@ -9,6 +9,12 @@ import { EntityNotFoundError } from 'typeorm';
 
 @Catch(EntityNotFoundError)
 export class NotfoundFilter implements ExceptionFilter {
+  isDev: boolean;
+
+  constructor(isDev: boolean) {
+    this.isDev = isDev;
+  }
+
   catch(exception: EntityNotFoundError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -22,6 +28,7 @@ export class NotfoundFilter implements ExceptionFilter {
     response.status(HttpStatus.NOT_FOUND).json({
       statusCode: HttpStatus.NOT_FOUND,
       message: `No entity by given param found`,
+      ...(this.isDev && { cause: exception.message }),
     });
   }
 }

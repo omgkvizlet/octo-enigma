@@ -33,7 +33,6 @@ export class SetsService {
 
     const set: Set = { ...mappedSet, authors: [user] };
 
-    // TODO put into optional
     const res = await this.setsRepository.findOne({
       where: { name: set.name, authors: { id: user.id } },
     });
@@ -47,8 +46,6 @@ export class SetsService {
 
     const saved = await this.setsRepository.save(set);
 
-    // TODO
-    // TODO exception filter
     await this.wordsService.saveRaw(
       set.words.map((e): Word => {
         return { ...e, set: saved };

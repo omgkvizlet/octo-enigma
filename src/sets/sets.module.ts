@@ -6,12 +6,14 @@ import { Set } from './entities/set.entity';
 import { SetProfile } from './dto/set.profile';
 import { UsersModule } from "../users/users.module";
 import { WordsModule } from "../words/words.module";
+import { UserWordsModule } from '../user-words/user-words.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Set]),
     UsersModule,
-    WordsModule
+    WordsModule,
+    UserWordsModule,
   ],
   controllers: [SetsController],
   providers: [SetsService, SetProfile],

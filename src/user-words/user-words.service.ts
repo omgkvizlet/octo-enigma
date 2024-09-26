@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserWordDto } from './dto/create-user-word.dto';
 import { UpdateUserWordDto } from './dto/update-user-word.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,17 +10,19 @@ import { Mapper } from '@automapper/core';
 import { CreateWordDto } from '../words/dto/create-word.dto';
 import { Word } from '../words/entities/word.entity';
 import { Set } from '../sets/entities/set.entity';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class UserWordsService {
   constructor(
     @InjectRepository(UserWord) private userWordsRepo: Repository<UserWord>,
     @InjectRepository(Word) private wordsRepo: Repository<Word>,
+    @InjectRepository(User) private usersRepo: Repository<User>,
     @InjectRepository(Set) private setsRepo: Repository<Set>,
     @InjectMapper() private readonly classMapper: Mapper,
   ) {}
 
-  async add(createUserWordDto: CreateUserWordDto) {
+  async add(createUserWordDto: CreateUserWordDto, userID: number) {
     // TODO set word & user check
 
     const uw = this.classMapper.map(
@@ -29,7 +31,9 @@ export class UserWordsService {
       UserWord,
     );
 
-    this.setsRepo.findOneByOrFail({ id: +createUserWordDto.setID })
+    await this.setsRepo.findOneByOrFail({ id: +createUserWordDto.setID });
+
+    uw.user = await this.usersRepo.findOneByOrFail({ id: +userID });
 
     console.log(uw);
 
@@ -59,15 +63,28 @@ export class UserWordsService {
     return `This action updates a #${id} userWord`;
   }
 
-  async getSetsListByUserID(userID: number) {
-    // TODO !!! #1 task: how to pass set & how to load it (auto/manual)
+  async getSetsListByUserID(userID: number, isOwner: boolean) {
+    // TODO !!! #1 task: user lib
 
-    return (
+    console.log({ userID });
+
+    await this.usersRepo.findOneByOrFail({ id: +userID });
+
+    const res = (
       await this.userWordsRepo.find({
         relations: ['set', 'user'],
-        where: { user: { id: userID } },
+        where: {
+          user: { id: userID },
+          ...(!isOwner && { set: { isPrivate: false } }),
+        },
       })
     ).map((val) => val?.set);
+
+    // if (res.length === 0) {
+    //   throw new NotFoundException('No sets by user find');
+    // }
+
+    return res;
     // .where('userWords.setId', `${id}`);
   }
 
